@@ -19,4 +19,28 @@ public class World : MonoBehaviour {
             continents[i].updateRegions();
     }
 
+    public float getGrowth()
+    {
+        float growth = 0;
+        foreach (Continent cont in continents)
+            growth+=cont.getGrowth();
+        return growth;
+    }
+
+    public int getBelivers()
+    {
+        float belivers = 0;
+        foreach (Continent cont in continents)
+            belivers += cont.getBelivers();
+        return (int)belivers;
+    }
+
+    public int getPopulation()
+    {
+        float population = 0;
+        foreach (Continent cont in continents)
+            population += cont.getPopulation();
+        return (int)population;
+    }
+
 }

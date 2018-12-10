@@ -24,18 +24,33 @@ public class UpgradeShop : MonoBehaviour {
 
     [Header("Prizes")]
     public float initialPrice;
+    public float upgradePricePercent;
     float price;
     public Text PriceText;
 
+    [Header("Player")]
+    public PlayerManager player;
+
     public void Reset()
     {
+        /*List<GameObject> childs = new List<GameObject>(transform.childCount);
+
+        foreach (Transform child in transform)
+            childs.Add(child.gameObject);
+
+        for (int i = 0; i < childs.Count; i++) 
+        {
+            Destroy(childs[i]);
+        }*/
+        player = GameObject.Find("Player Manager").GetComponent<PlayerManager>();
+
         //change the name of the gameobject 
         gameObject.name = "Upgrade Shop";
 
         //generate the child gameobject to set an image do descrive the upgrade
         GameObject upgradeImageObject = new GameObject("shopSprite");
         UpgradeImageComponent = upgradeImageObject.AddComponent<Image>();
-        upgradeImageObject.transform.SetParent(gameObject.transform);
+        upgradeImageObject.transform.SetParent(transform);
         UpgradeImageComponent.rectTransform.position = transform.position;
         
     }
@@ -53,22 +68,40 @@ public class UpgradeShop : MonoBehaviour {
 
     }
 
+
+
     public void Start()
     {
         price = initialPrice;
     }
 
+    public void AugmentPrice()
+    {
+        price += price * upgradePricePercent;
+        PriceText.text = price.ToString();
+    }
+
 
     public void generateUpgrade()
     {
-        GameObject upgrade = new GameObject("Upgrade " + UpgradeName);
-        Image upgradeIMG = upgrade.AddComponent<Image>();
-        upgradeIMG.sprite = upgradeSprite;
-        upgradeIMG.raycastTarget = false;
 
-        upgrade.AddComponent<Upgrade>();
+        //check if player has enough money to buy
+        if (player.buyUpgrade(price))
+        {
+            GameObject upgrade = new GameObject("Upgrade " + UpgradeName);
+            Image upgradeIMG = upgrade.AddComponent<Image>();
+            upgradeIMG.sprite = upgradeSprite;
 
-        upgrade.transform.SetParent(transform.parent);
+            Upgrade newUp = upgrade.AddComponent<Upgrade>();
+            newUp.value = powerUpValue;
+            newUp.shop = this;
+            //change price
+            AugmentPrice();
+
+            player.currentUpgrade = upgrade;
+
+            upgrade.transform.SetParent(transform.parent);
+        }
     }
 
 }
