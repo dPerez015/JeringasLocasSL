@@ -52,6 +52,7 @@ public class UpgradeShop : MonoBehaviour {
         UpgradeImageComponent = upgradeImageObject.AddComponent<Image>();
         upgradeImageObject.transform.SetParent(transform);
         UpgradeImageComponent.rectTransform.position = transform.position;
+
         
     }
 

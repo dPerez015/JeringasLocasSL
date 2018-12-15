@@ -13,7 +13,7 @@ public class World : MonoBehaviour {
 
     }
 
-    private void Update()
+    public void updateContinents()
     {
         for (int i = 0; i < continents.Length; i++)
             continents[i].updateRegions();

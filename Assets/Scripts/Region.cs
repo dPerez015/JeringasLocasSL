@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Sprite))]
 [RequireComponent(typeof(BoxCollider2D))]
 public class Region : MonoBehaviour {
-
+    
     [Header("Sprites")]
     public Sprite normalSprite;
     public Sprite highlightSprite;
@@ -15,11 +15,12 @@ public class Region : MonoBehaviour {
     SpriteRenderer rend;
 
     [Header("Parameters")]
-    float population;
     public float totalPopulation;
     public float beliversGrowthPS;
     public float actualBelivers;
+    float population;
 
+    [Header("UpgradesImportance")]
     public float SocialMediaImportance;
     public float PublicityImportance;
     public float GovernmentImportance;

@@ -21,6 +21,7 @@ public class PlayerManager : MonoBehaviour
 
     float currency;
     World world;
+    bool paused;
 
     // Use this for initialization
     void Reset()
@@ -36,6 +37,8 @@ public class PlayerManager : MonoBehaviour
         currentRegion = null;
         currentContinent = null;
         currentRegionName.text = "World";
+
+        paused = false;
     }
 
     public bool buyUpgrade(float value)
@@ -78,7 +81,7 @@ public class PlayerManager : MonoBehaviour
                 {
                     if (hit.transform.gameObject != currentRegionGO)
                     {
-                        if(currentRegion!= null)
+                        if (currentRegion != null)
                             currentRegion.deactivate();
                         if (currentContinent != null)
                             currentContinent.deactivate();
@@ -88,23 +91,46 @@ public class PlayerManager : MonoBehaviour
                         currentRegion.activate();
                         currentContinent = null;
                     }
-                    else
+                    else if (currentContinent == null)
                     {
                         currentContinent = currentRegion.continent;
                         currentRegionName.text = currentContinent.gameObject.name;
                         currentContinent.activate();
                     }
+                    else
+                    {
+
+                    }
+                    
+                     
+                    
                 }
                 else
                 {
-                    currentRegion = null;
-                    currentContinent = null;
+                    if (currentContinent != null)
+                    {
+                        currentContinent.deactivate();
+                        currentContinent = null;
+                        currentRegion = null;
+                        currentRegionGO = null;
+
+                    }
+                    else if (currentRegion != null)
+                    {
+                        currentRegion.deactivate();
+                        currentRegion = null;
+                        currentRegionGO = null;
+                    }
                     currentRegionName.text = "World";
                 }
 
             }
 
         }
+
+        //updateWorld
+        if(!paused)
+            world.updateContinents();
 
         //currency
         currency += world.getGrowth()*Time.deltaTime;
