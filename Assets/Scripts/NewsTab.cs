@@ -4,21 +4,57 @@ using UnityEngine;
 
 public class NewsTab : MonoBehaviour {
 
-    Vector3 initialPos;
-    Vector3 finalPos;
-    Transform finalPosTransform;
+    public Transform initialPos;
+    public Transform finalPos;
 
+    public AnimationCurve animCurve;
+    public float animTime;
 
-	// Use this for initialization
-	void Start () {
-        initialPos = transform.position;
-        finalPos = finalPosTransform.position;
-	}
-	
-    public void 
+    float initialTime;
+
+    Vector3 objective;
+    bool animationPlaying;
+    bool isBeingShown;
+
+    public void Start()
+    {
+        isBeingShown = false;
+        animationPlaying = false;
+    }
+
+    public void showOrHide() {
+        if (isBeingShown)
+            objective = initialPos.position;
+        else
+            objective = finalPos.position;
+
+        animationPlaying = true;
+        initialTime = 0;
+    }
+
 
 	// Update is called once per frame
-	void Update () {
+	public void Update () {
+        if (animationPlaying)
+        {
+            //initial time augment
+            initialTime += Time.deltaTime;
+
+            //move object
+            if (!isBeingShown)
+                transform.position = Vector3.Lerp(initialPos.position, finalPos.position, animCurve.Evaluate(initialTime / animTime));
+            else
+                transform.position = Vector3.Lerp(finalPos.position, initialPos.position, animCurve.Evaluate(initialTime / animTime));
+
+            //check animation ended
+            if (initialTime >= animTime)
+            {
+                animationPlaying = false;
+                isBeingShown = !isBeingShown;
+            }
+            
+        }
+        
 		
 	}
 }

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Upgrade : MonoBehaviour {
-
-    enum Type {Social, Public, Government};
+    [System.Serializable]
+    public enum Type {Social, Public, Government};
     enum Scale {Continent, Region};
     public float value;
     public UpgradeShop shop;
+    public Type type;
 
 
 

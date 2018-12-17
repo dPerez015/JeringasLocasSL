@@ -50,7 +50,7 @@ public class Continent : MonoBehaviour {
     {
         float growth = 0;
         foreach (Region reg in regions)
-            growth += reg.beliversGrowthPS;
+            growth += reg.getGrowth();
         return (int)Mathf.Floor(growth);
     }
 

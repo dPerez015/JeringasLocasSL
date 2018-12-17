@@ -27,6 +27,19 @@ public class Region : MonoBehaviour {
 
     PlayerManager player;
 
+    [Header("Revolts")]
+    public float maxProbOfApearence;
+    float actualRevoltProb;
+    public float timeBetweenChecks;
+    float timeSinceLastCheck = 0;
+    RevoltManager revoltManager;
+    Revolt.RevoltParams currentRevolt;
+    bool revoltOnGoing;
+
+    public Image alert;
+    public Text type;
+
+
     [System.NonSerialized]
     public Continent continent;
 
@@ -36,15 +49,73 @@ public class Region : MonoBehaviour {
         continent = transform.parent.GetComponent<Continent>();
     }
 
+    public void Start()
+    {
+        revoltManager = GameObject.Find("RevoltManager").GetComponent<RevoltManager>();
+    }
+
+    public void activateRevolt()
+    {
+        revoltOnGoing = true;
+    }
+
 
     public void updatePopulation()
     {
-        actualBelivers += beliversGrowthPS * Time.deltaTime;
+        actualBelivers = Mathf.Clamp(actualBelivers + beliversGrowthPS * Time.deltaTime,0,totalPopulation);
+
+        //check for the revolts
+        timeSinceLastCheck += Time.deltaTime;
+        if (timeSinceLastCheck>timeBetweenChecks)
+        {
+            //get a revolt
+            currentRevolt = revoltManager.getRevoltType().parameters;
+            activateRevolt();
+            timeSinceLastCheck -= timeBetweenChecks;
+           
+        }
+    }
+
+    float convertUpgradeValue(float initVal, Upgrade.Type type)
+    {
+        float value;
+        switch (type)
+        {
+            case Upgrade.Type.Government:
+                value = initVal * GovernmentImportance;
+                break;
+            case Upgrade.Type.Public:
+                value = initVal * PublicityImportance;
+                break;
+            case Upgrade.Type.Social:
+                value = initVal * SocialMediaImportance;
+                break;
+            default:
+                value = 0;
+                break;
+        }
+        return value;
     }
 
     public void getUpgrade(Upgrade up)
     {
-        beliversGrowthPS += up.value;
+        if (revoltOnGoing)
+            beliversGrowthPS += convertUpgradeValue(up.value, up.type);
+        else
+        {
+            currentRevolt.amountOfFaithToDisappear -= convertUpgradeValue(up.value, up.type);
+            //change text
+            if (currentRevolt.amountOfFaithToDisappear <= 0)
+            {
+                revoltOnGoing = false;
+            }
+        }
+
+    }
+
+    public float getGrowth()
+    {
+        return Mathf.Min(beliversGrowthPS,totalPopulation-actualBelivers);
     }
 
     public void activate()
