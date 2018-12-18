@@ -65,7 +65,7 @@ public class Region : MonoBehaviour {
         alert.gameObject.SetActive(true);
         value.text = currentRevolt.amountOfFaithToDisappear.ToString("f1");
         string type="";
-        /*switch (currentRevolt.type)
+        switch (currentRevolt.type)
         {
             case Upgrade.Type.Government:
                 type = "Government";
@@ -76,8 +76,8 @@ public class Region : MonoBehaviour {
             case Upgrade.Type.Social:
                 type = "Social Media";
                 break;
-        }*/
-        type = currentRevolt.name;
+        }
+        //type = currentRevolt.name;
         typeText.text = type;
     }
     void deactivateRevolt()

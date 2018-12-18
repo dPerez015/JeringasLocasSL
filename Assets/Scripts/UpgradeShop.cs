@@ -79,7 +79,7 @@ public class UpgradeShop : MonoBehaviour {
     public void AugmentPrice()
     {
         price += price * upgradePricePercent;
-        PriceText.text = price.ToString();
+        PriceText.text = price.ToString("f1");
     }
 
 

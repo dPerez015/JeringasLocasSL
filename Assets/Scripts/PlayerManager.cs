@@ -137,7 +137,7 @@ public class PlayerManager : MonoBehaviour
 
 
         //print values
-        currencyText.text = currency.ToString("f1");
+        currencyText.text = currency.ToString("f2");
 
         if (currentContinent != null)
         {

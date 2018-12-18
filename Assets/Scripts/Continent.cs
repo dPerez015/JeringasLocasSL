@@ -46,12 +46,12 @@ public class Continent : MonoBehaviour {
         return (int)Mathf.Floor(population);
     }
 
-    public int getGrowth()
+    public float getGrowth()
     {
         float growth = 0;
         foreach (Region reg in regions)
             growth += reg.getGrowth();
-        return (int)Mathf.Floor(growth);
+        return growth;
     }
 
 }
