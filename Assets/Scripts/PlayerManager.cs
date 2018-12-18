@@ -137,7 +137,7 @@ public class PlayerManager : MonoBehaviour
 
 
         //print values
-        currencyText.text = currency.ToString();
+        currencyText.text = currency.ToString("f1");
 
         if (currentContinent != null)
         {
@@ -156,7 +156,7 @@ public class PlayerManager : MonoBehaviour
             float population = currentRegion.totalPopulation;
 
             currentRegionConverted.text = Mathf.Floor(belivers).ToString();
-            currentRegionGrowth.text = currentRegion.beliversGrowthPS.ToString();
+            currentRegionGrowth.text = currentRegion.getGrowth().ToString();
             currentRegionPopulation.text = population.ToString();
 
             hpVar.fillAmount = belivers / population;

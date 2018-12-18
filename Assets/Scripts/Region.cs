@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 
 [RequireComponent(typeof(Sprite))]
-[RequireComponent(typeof(BoxCollider2D))]
 public class Region : MonoBehaviour {
     
     [Header("Sprites")]
@@ -28,7 +27,7 @@ public class Region : MonoBehaviour {
     PlayerManager player;
 
     [Header("Revolts")]
-    public float maxProbOfApearence;
+    public float maxProbOfRevolt;
     float actualRevoltProb;
     public float timeBetweenChecks;
     float timeSinceLastCheck = 0;
@@ -37,12 +36,14 @@ public class Region : MonoBehaviour {
     bool revoltOnGoing;
 
     public Image alert;
-    public Text type;
+    public Text typeText;
+    public Text value;
 
 
     [System.NonSerialized]
     public Continent continent;
 
+    //initialization
     public void Awake()
     {
         rend = GetComponent<SpriteRenderer>();
@@ -52,30 +53,71 @@ public class Region : MonoBehaviour {
     public void Start()
     {
         revoltManager = GameObject.Find("RevoltManager").GetComponent<RevoltManager>();
+
+        timeSinceLastCheck = 0;
     }
 
-    public void activateRevolt()
+    //revolt
+    void activateRevolt()
     {
+        currentRevolt = revoltManager.getRevoltType().parameters;
         revoltOnGoing = true;
+        alert.gameObject.SetActive(true);
+        value.text = currentRevolt.amountOfFaithToDisappear.ToString("f1");
+        string type="";
+        /*switch (currentRevolt.type)
+        {
+            case Upgrade.Type.Government:
+                type = "Government";
+                break;
+            case Upgrade.Type.Public:
+                type = "Public Opinion";
+                break;
+            case Upgrade.Type.Social:
+                type = "Social Media";
+                break;
+        }*/
+        type = currentRevolt.name;
+        typeText.text = type;
+    }
+    void deactivateRevolt()
+    {
+        revoltOnGoing = false;
+        alert.gameObject.SetActive(false);
+        beliversGrowthPS /= 3;
     }
 
-
-    public void updatePopulation()
+    void tryRevolt()
     {
-        actualBelivers = Mathf.Clamp(actualBelivers + beliversGrowthPS * Time.deltaTime,0,totalPopulation);
-
-        //check for the revolts
-        timeSinceLastCheck += Time.deltaTime;
-        if (timeSinceLastCheck>timeBetweenChecks)
+        int _try = Random.Range(0, 101);
+        float probability=revoltManager.getProb(actualBelivers/totalPopulation,maxProbOfRevolt);
+        if (_try < probability)
         {
             //get a revolt
-            currentRevolt = revoltManager.getRevoltType().parameters;
             activateRevolt();
-            timeSinceLastCheck -= timeBetweenChecks;
-           
         }
     }
 
+    //update
+    public void updatePopulation()
+    {
+        if (!revoltOnGoing)
+        {
+            actualBelivers = Mathf.Clamp(actualBelivers + beliversGrowthPS * Time.deltaTime, 0, totalPopulation);
+            //check for the revolts
+            timeSinceLastCheck += Time.deltaTime;
+            if (timeSinceLastCheck > timeBetweenChecks)
+            {
+                tryRevolt();
+                timeSinceLastCheck -= timeBetweenChecks;
+            }
+        }
+        else
+            actualBelivers = Mathf.Clamp(actualBelivers - currentRevolt.beliversLose * Time.deltaTime, 0, totalPopulation);
+    }
+
+
+    //parameters getter
     float convertUpgradeValue(float initVal, Upgrade.Type type)
     {
         float value;
@@ -99,25 +141,31 @@ public class Region : MonoBehaviour {
 
     public void getUpgrade(Upgrade up)
     {
-        if (revoltOnGoing)
+        if (!revoltOnGoing)
             beliversGrowthPS += convertUpgradeValue(up.value, up.type);
         else
         {
             currentRevolt.amountOfFaithToDisappear -= convertUpgradeValue(up.value, up.type);
             //change text
+
+            value.text = currentRevolt.amountOfFaithToDisappear.ToString("f1");
+            //check if ended
             if (currentRevolt.amountOfFaithToDisappear <= 0)
             {
-                revoltOnGoing = false;
+                deactivateRevolt();
             }
         }
 
     }
 
+    //parameters getter
     public float getGrowth()
     {
         return Mathf.Min(beliversGrowthPS,totalPopulation-actualBelivers);
     }
 
+
+    //activation
     public void activate()
     {
         rend.sprite = highlightSprite;

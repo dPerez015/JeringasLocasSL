@@ -5,15 +5,15 @@ using UnityEngine.UI;
 
 public class NewsButton : MonoBehaviour {
 
-    public Image image;
+    public Image showImage;
+    public Sprite NewsSprite;
+    public GameObject showControls;
+    public NewsTab newstab;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public void showNews()
+    {
+        showImage.sprite = NewsSprite;
+        showControls.SetActive(true);
+        newstab.showOrHide();
+    }
 }
