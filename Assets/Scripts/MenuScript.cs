@@ -16,7 +16,7 @@ public class MenuScript : MonoBehaviour
     // Update is called once per frame
     public void loadGame()
     {
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(1);
     }
     public void quitGame()
     {
