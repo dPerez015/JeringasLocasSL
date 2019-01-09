@@ -43,6 +43,11 @@ public class Region : MonoBehaviour {
     [System.NonSerialized]
     public Continent continent;
 
+
+    public Color normalColor;
+    public Color conqueredColor;
+
+
     //initialization
     public void Awake()
     {
@@ -114,6 +119,9 @@ public class Region : MonoBehaviour {
         }
         else
             actualBelivers = Mathf.Clamp(actualBelivers - currentRevolt.beliversLose * Time.deltaTime, 0, totalPopulation);
+
+        //change color
+        rend.color = Color.Lerp(normalColor, conqueredColor, actualBelivers / totalPopulation);
     }
 
 

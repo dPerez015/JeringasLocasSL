@@ -16,6 +16,7 @@ public class NewsTab : MonoBehaviour {
     bool animationPlaying;
     bool isBeingShown;
 
+    public GameObject alert;
     public void Start()
     {
         isBeingShown = false;
@@ -30,6 +31,7 @@ public class NewsTab : MonoBehaviour {
 
         animationPlaying = true;
         initialTime = 0;
+        alert.SetActive(true);
     }
 
 

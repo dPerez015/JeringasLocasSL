@@ -23,11 +23,18 @@ public class PlayerManager : MonoBehaviour
     World world;
     bool paused;
 
+    public GameObject mailcontainter;
+    public float[] percentagesForMailAppear;
+    int currentMailAppeared=0;
+    Queue<GameObject> mailList;
+    public GameObject mailAlert;
+
     // Use this for initialization
     void Reset()
     {
         gameObject.name = "Player Manager";
     }
+
 
     private void Start()
     {
@@ -37,6 +44,15 @@ public class PlayerManager : MonoBehaviour
         currentRegion = null;
         currentContinent = null;
         currentRegionName.text = "World";
+
+        //mailAlert.SetActive(false);
+        mailList = new Queue<GameObject>(mailcontainter.transform.childCount);
+
+        foreach (Transform mail in mailcontainter.transform)
+        {
+            mail.gameObject.SetActive(false);
+            mailList.Enqueue(mail.gameObject);
+        }
 
         paused = false;
     }
@@ -50,6 +66,20 @@ public class PlayerManager : MonoBehaviour
         }
         return false;
             
+    }
+
+    public void activateMail()
+    {
+        currentMailAppeared++;
+
+        //sacamos un mail aleatorio de la cola
+        GameObject mail = mailList.Dequeue();
+
+        //lo activamos 
+        mail.SetActive(true);
+
+        //activamos la alerta
+        mailAlert.SetActive(true);
     }
 
     // Update is called once per frame
@@ -135,6 +165,12 @@ public class PlayerManager : MonoBehaviour
         //currency
         currency += world.getGrowth()*Time.deltaTime;
 
+        //mail arrival
+        Debug.Log(world.getPercentConverted());
+        if (currentMailAppeared<=percentagesForMailAppear.Length)
+            if (world.getPercentConverted() > percentagesForMailAppear[currentMailAppeared])
+                activateMail();
+        
 
         //print values
         currencyText.text = currency.ToString("f2");
@@ -146,7 +182,7 @@ public class PlayerManager : MonoBehaviour
 
             currentRegionConverted.text = Mathf.Floor(belivers).ToString();
             currentRegionGrowth.text = currentContinent.getGrowth().ToString();
-            currentRegionPopulation.text = population.ToString();
+            currentRegionPopulation.text = population.ToString("f0");
 
             hpVar.fillAmount = belivers / population;
         }
@@ -157,7 +193,7 @@ public class PlayerManager : MonoBehaviour
 
             currentRegionConverted.text = Mathf.Floor(belivers).ToString();
             currentRegionGrowth.text = currentRegion.getGrowth().ToString();
-            currentRegionPopulation.text = population.ToString();
+            currentRegionPopulation.text = population.ToString("f0");
 
             hpVar.fillAmount = belivers / population;
         }
@@ -168,7 +204,7 @@ public class PlayerManager : MonoBehaviour
 
             currentRegionConverted.text = Mathf.Floor(belivers).ToString();
             currentRegionGrowth.text = world.getGrowth().ToString();
-            currentRegionPopulation.text = population.ToString();
+            currentRegionPopulation.text = population.ToString("f0");
 
             hpVar.fillAmount = belivers / population;
         }

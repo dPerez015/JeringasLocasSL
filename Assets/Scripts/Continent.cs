@@ -38,12 +38,12 @@ public class Continent : MonoBehaviour {
         return (int)Mathf.Floor(belivers);
     }
 
-    public int getPopulation()
+    public float getPopulation()
     {
         float population = 0;
         foreach(Region reg in regions)
             population += reg.totalPopulation;
-        return (int)Mathf.Floor(population);
+        return population;
     }
 
     public float getGrowth()

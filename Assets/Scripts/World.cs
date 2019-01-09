@@ -35,12 +35,17 @@ public class World : MonoBehaviour {
         return (int)belivers;
     }
 
-    public int getPopulation()
+    public float getPopulation()
     {
         float population = 0;
         foreach (Continent cont in continents)
             population += cont.getPopulation();
-        return (int)population;
+        return Mathf.Floor(population);
+    }
+
+    public float getPercentConverted()
+    {
+        return getBelivers() /getPopulation();
     }
 
 }
