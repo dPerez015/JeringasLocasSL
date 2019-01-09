@@ -166,8 +166,7 @@ public class PlayerManager : MonoBehaviour
         currency += world.getGrowth()*Time.deltaTime;
 
         //mail arrival
-        Debug.Log(world.getPercentConverted());
-        if (currentMailAppeared<=percentagesForMailAppear.Length)
+        if (currentMailAppeared<percentagesForMailAppear.Length)
             if (world.getPercentConverted() > percentagesForMailAppear[currentMailAppeared])
                 activateMail();
         
